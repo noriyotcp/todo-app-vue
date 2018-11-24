@@ -4,16 +4,16 @@
       <div class="col-md-6">
         <div class="todolist not-done">
           <h1>Todos</h1>
-          <add-todo @add-todo="addTodo"/>
+          <add-todo />
           <hr>
-          <todo-list-view :todos="unFinishedTodos" @completed-todo="completedTodo" />
+          <todo-list-view :todos="unFinishedTodos" />
           <div class="todo-footer">
             <strong><span class="count-todos"></span></strong> {{ unFinishedTodos.length }} Items Left
           </div>
         </div>
       </div>
       <div class="col-md-6">
-        <finished-todos :todos="finishedTodos" @delete-todo="deleteTodo" />
+        <finished-todos :todos="finishedTodos" />
       </div>
     </div>
   </div>
@@ -23,7 +23,9 @@
 import TodoListView from './components/TodoListView.vue'
 import AddTodo from './components/AddTodo.vue'
 import FinishedTodos from './components/FinishedTodos.vue'
-import { todos } from './seed.js'
+import { todos } from './seed'
+import EventBus from './EventBus'
+
 export default {
   name: "App",
   components: {
@@ -36,11 +38,16 @@ export default {
       todos: todos
     }
   },
+  created () {
+    EventBus.$on('add-todo', event => this.addTodo(event))
+    EventBus.$on('complete-todo', event => this.completeTodo(event))
+    EventBus.$on('delete-todo', event => this.deleteTodo(event))
+  },
   methods: {
     addTodo (event) {
       this.todos.push(event)
     },
-    completedTodo (event) {
+    completeTodo (event) {
       const index = this.todos.findIndex(todo => todo.id === event.id)
       this.todos[index].completed = true
     },
