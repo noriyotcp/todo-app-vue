@@ -4,26 +4,16 @@
       <div class="col-md-6">
         <div class="todolist not-done">
           <h1>Todos</h1>
-          <input type="text" class="form-control add-todo" placeholder="Add todo">
-
+          <add-todo @add-todo="addTodo"/>
           <hr>
-          <todo-list-view />
+          <todo-list-view :todos="unFinishedTodos" @completed-todo="completedTodo" />
           <div class="todo-footer">
-            <strong><span class="count-todos"></span></strong> Items Left
+            <strong><span class="count-todos"></span></strong> {{ unFinishedTodos.length }} Items Left
           </div>
         </div>
       </div>
       <div class="col-md-6">
-        <div class="todolist">
-          <h1>Already Done</h1>
-          <ul id="done-items" class="list-unstyled">
-            <li>Some item
-              <button class="remove-item btn btn-default btn-xs pull-right">
-                <font-awesome-icon icon="trash"></font-awesome-icon>
-              </button>
-            </li>
-          </ul>
-        </div>
+        <finished-todos :todos="finishedTodos" @delete-todo="deleteTodo" />
       </div>
     </div>
   </div>
@@ -31,10 +21,41 @@
 
 <script>
 import TodoListView from './components/TodoListView.vue'
+import AddTodo from './components/AddTodo.vue'
+import FinishedTodos from './components/FinishedTodos.vue'
+import { todos } from './seed.js'
 export default {
   name: "App",
   components: {
-    TodoListView
+    TodoListView,
+    AddTodo,
+    FinishedTodos
+  },
+  data () {
+    return {
+      todos: todos
+    }
+  },
+  methods: {
+    addTodo (event) {
+      this.todos.push(event)
+    },
+    completedTodo (event) {
+      const index = this.todos.findIndex(todo => todo.id === event.id)
+      this.todos[index].completed = true
+    },
+    deleteTodo (event) {
+      const index = this.todos.findIndex(todo => todo.id === event.id)
+      this.todos.splice(index, 1)
+    }
+  },
+  computed: {
+    finishedTodos () {
+      return this.todos.filter(todo => todo.completed === true)
+    },
+    unFinishedTodos () {
+      return this.todos.filter(todo => todo.completed === false)
+    }
   }
 };
 </script>
