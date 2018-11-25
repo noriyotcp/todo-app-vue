@@ -23,7 +23,6 @@
 import TodoListView from './components/TodoListView.vue'
 import AddTodo from './components/AddTodo.vue'
 import FinishedTodos from './components/FinishedTodos.vue'
-import { todos } from './seed'
 
 export default {
   name: "App",
@@ -31,11 +30,6 @@ export default {
     TodoListView,
     AddTodo,
     FinishedTodos
-  },
-  data () {
-    return {
-      todos: todos
-    }
   },
   methods: {
     addTodo (event) {
@@ -52,10 +46,10 @@ export default {
   },
   computed: {
     finishedTodos () {
-      return this.todos.filter(todo => todo.completed === true)
+      return this.$store.getters.findTodos.filter(todo => todo.completed === true)
     },
     unFinishedTodos () {
-      return this.todos.filter(todo => todo.completed === false)
+      return this.$store.getters.findTodos.filter(todo => todo.completed === false)
     }
   }
 };

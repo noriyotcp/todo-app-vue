@@ -23,6 +23,7 @@ export default {
   },
   methods: {
     removeTodo (todoId) {
+      this.$store.dispatch('deleteTodo', { id: todoId })
     }
   }
 };
